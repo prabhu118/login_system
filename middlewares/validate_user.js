@@ -29,7 +29,7 @@ module.exports.signin = (req,res,next) => {
         .trim().isLength({min:1, max : undefined}).withMessage("Username is required")
 
     req.check('password')
-        .trim().isLength({min:6, max : undefined}).withMessage("Password is required")
+        .trim().isLength({min:1, max : undefined}).withMessage("Password is required")
 
     var errors = req.validationErrors();
     if(errors) {

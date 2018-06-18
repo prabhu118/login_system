@@ -21,7 +21,9 @@ module.exports.signup = (req,res) => {
 
 // bcrypt.compareSync(myPlaintextPassword, hash);
 module.exports.signin = (req,res) => {
-    passport.authenticate('local-signin', (err,user,info) => {
-
-    })
+    passport.authenticate('signin', (err,user,info) => {
+        if(err) return res.json({type:false,message:err});
+        if(info) return res.json({type:false,message:info.message})
+        return res.json({type:true,message:"User has been successfully logged in"})
+    })(req,res)
 }

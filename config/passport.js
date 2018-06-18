@@ -1,6 +1,7 @@
-var passport = require('passport');
-var User = require('../models/user');
-var LocalStrategy = require('passport-local').Strategy;
+var passport                = require('passport');
+var User                    = require('../models/user');
+const bcrypt                = require('bcrypt');
+var LocalStrategy           = require('passport-local').Strategy;
 
 passport.serializeUser(function (user, done) {
     done(null, user.id);
@@ -12,26 +13,21 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
-passport.use('local.signin', new LocalStrategy({
+passport.use('signin', new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
     passReqToCallback: true
 }, function(req, username, password, done) {
     var condition = {};
-    
     var pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    
-    if(pattern.test(username))
-    {
-        // condition = { email : username };
+
+    if(pattern.test(username)) {
         condition = { email : { $regex : ".*" + username + ".*", $options:"i"} };
     }
-    else if(username.length == 10 || Number.isInteger(username))
-    {
+    else if(username.length == 10 || Number.isInteger(username)) {
         condition = { mobile : username };
     }
-    else
-    {
+    else {
         return done(null, false , {message: 'Invalid username'})
     }
 
@@ -42,11 +38,7 @@ passport.use('local.signin', new LocalStrategy({
         if (!user) {
             return done(null, false, {message: 'User not registered'});
         }
-        if(!user.password)
-        {
-            return done(null,false,{message:"Password is not set. Please set password by clicking on activation link sent to your email"})
-        }
-        if (!user.validPassword(password)) {
+        if (!bcrypt.compareSync(password, user.password)) {
             return done(null, false, {message: 'Wrong password.'});
         }
         return done(null, user);
