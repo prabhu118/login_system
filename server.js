@@ -52,10 +52,16 @@ app.get('/test', () => {
 })
 
 // ERROR HANDLING
-// app.use((err,req,res,next) => {
-//     console.log('here')
-//     console.log(err)
-// });
+app.use((err,req,res,next) => {
+    console.log('here')
+    // console.error(err.name, err.errors)
+    if(err.name === "MongoError" && err.code === 11000) {
+    	return res.status(500).json({type:false,message:"User already exists"});
+    }
+
+    // console.log(err.name)
+    res.status(500).json({type:false})
+});
 
 // INITIALIZE SERVER
 server.listen(port, () => {
