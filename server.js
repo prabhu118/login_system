@@ -52,12 +52,18 @@ app.get('/test', () => {
 })
 
 // ERROR HANDLING
-// app.use((err,req,res,next) => {
-//     console.log('here')
-//     console.log(err)
-// });
+app.use((err,req,res,next) => {
+    console.log('here')
+    console.error(err)
+});
 
 // INITIALIZE SERVER
 server.listen(port, () => {
     console.log(`Server started at port ${port}`)
+})
+
+// GLOBAL ERROR HANDLER
+process.on('uncaughtException',(err) => {
+    console.log(err);
+    process.exit(1);
 })

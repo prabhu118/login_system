@@ -3,7 +3,7 @@ const User                  = require('../models/user');
 const bcrypt                = require('bcrypt');
 const saltRounds            = 10 ;
 
-module.exports.signup = (req,res) => {
+module.exports.signup = (req,res,next) => {
 
     var user = new User();
     user.name = req.body.name;
@@ -15,7 +15,7 @@ module.exports.signup = (req,res) => {
         if(data) return res.status(201).json({type:true})
         if(!data) return res.status(500).json({type:false});
     }).catch((err) => {
-        console.log(err)
+        return next(err);
     })
 }
 
