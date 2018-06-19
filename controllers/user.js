@@ -15,11 +15,11 @@ module.exports.signup = (req,res,next) => {
         if(data) return res.status(201).json({type:true})
         if(!data) return res.status(500).json({type:false});
     }).catch((err) => {
+        // console.log(err)
         return next(err);
     })
 }
 
-// bcrypt.compareSync(myPlaintextPassword, hash);
 module.exports.signin = (req,res) => {
     passport.authenticate('signin', (err,user,info) => {
         if(err) return res.json({type:false,message:err});

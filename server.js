@@ -53,8 +53,10 @@ app.get('/test', () => {
 
 // ERROR HANDLING
 app.use((err,req,res,next) => {
-    console.log('here')
-    console.error(err)
+    if(err.name === "MongoError" && err.code === 11000) {
+    	return res.status(500).json({type:false,message:"User already exists"});
+    }
+    res.status(500).json({type:false})
 });
 
 // INITIALIZE SERVER
